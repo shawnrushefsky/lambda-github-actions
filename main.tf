@@ -17,6 +17,10 @@ data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
 
+data "github_repository" "source" {
+  name = var.repo
+}
+
 locals {
   runtimes = {
     node = {
@@ -24,7 +28,8 @@ locals {
       version_key    = "node-version"
       version_value  = var.node_version
       build_command  = "npm clean-install"
-      lambda_runtime = "node${var.node_version}"
+      lambda_runtime = "node${var.node_version}.x"
+      default_handler = "index.handler"
     }
 
     python = {
@@ -33,12 +38,16 @@ locals {
       version_value  = var.python_version
       build_command  = "pip install -r requirements.txt"
       lambda_runtime = "python${var.python_version}"
+      default_handler = "lambda_function.lambda_handler"
     }
   }
+
+  description = length(var.description) > 0 ? var.description : data.github_repository.source.description
+  handler = length(var.handler) > 0 ? var.handler : local.runtimes[var.runtime].default_handler
 }
 
-resource "github_repository_file" {
-  repository = var.repo
+resource "github_repository_file" "workflow_file" {
+  repository = data.github_repository.source.name
   file       = ".github/workflows/build-and-deploy-${data.aws_caller_identity.current.account_id}"
   content = templatefile("${path.module}/workflow-template.yml", {
     branch              = var.branch
@@ -66,7 +75,7 @@ data "archive_file" "base_lambda" {
   output_file = "${path.module}/package.zip"
 }
 
-resource "aws_s3_object" {
+resource "aws_s3_object" "default_handler" {
   bucket = var.lambda_bucket
   key    = "${var.function_name}.zip"
   source = data.archive_file.base_lambda.output_file
@@ -74,4 +83,48 @@ resource "aws_s3_object" {
   lifecycle {
     ignore_changes = all
   }
+}
+
+resource "aws_iam_role" "lambda_role" {
+  name = var.function_name
+  assume_role_policy = file("${path.module}/assume.json")
+}
+
+resource "aws_lambda_function" "lambda" {
+  function_name = var.function_name
+  s3_bucket = aws_s3_object.default_handler.bucket
+  s3_key = aws_s3_object.default_handler.key
+  description = local.description
+  handler = local.handler
+  runtime = local.runtimes[var.runtime].lambda_runtime
+  role = aws_iam_role.lambda_role.arn
+
+  environment {
+    variables = var.environment
+  }
+
+  tags = {
+    "GitHubRepo": data.github_repository.source.full_name
+  }
+}
+
+resource "aws_cloudwatch_log_group" "logs" {
+  name              = "/aws/lambda/${var.function_name}"
+  retention_in_days = var.log_retention_in_days
+}
+
+resource "aws_iam_policy" "logging" {
+  name = "lambda_logging_for_${var.function_name}"
+  path = "/"
+  description = "IAM policy for logging from the ${var.function_name} lambda"
+
+  policy = templatefile("${path.module}/cloudwatch-logging.json", {
+    aws_account         = data.aws_caller_identity.current.account_id
+    aws_region          = data.aws_region.current.name
+    log_group = aws_cloudwatch_log_group.logs.name
+  })
+}
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.logging.arn
 }
