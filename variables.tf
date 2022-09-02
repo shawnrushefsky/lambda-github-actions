@@ -3,7 +3,7 @@ variable "node_version" {
   default = 16
 
   validation {
-    condition = contains([12,14,16], var.node_version)
+    condition = contains([12, 14, 16], var.node_version)
   }
 }
 
@@ -46,21 +46,21 @@ variable "function_name" {
 }
 
 variable "description" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "handler" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "log_retention_in_days" {
-  type = number
+  type    = number
   default = 14
 }
 
 variable "environment" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
