@@ -44,6 +44,7 @@ locals {
 
   description = length(var.description) > 0 ? var.description : data.github_repository.source.description
   handler     = length(var.handler) > 0 ? var.handler : local.runtimes[var.runtime].default_handler
+  env = merge({ REPO_FULL_NAME = data.github_repository.source.full_name }, var.environment)
 }
 
 resource "github_repository_file" "workflow_file" {
