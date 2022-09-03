@@ -102,7 +102,7 @@ resource "aws_lambda_function" "lambda" {
   architectures = ["arm64"]
 
   environment {
-    variables = var.environment
+    variables = local.env
   }
 
   tags = {
