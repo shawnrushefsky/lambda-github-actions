@@ -72,13 +72,13 @@ resource "github_repository_file" "workflow_file" {
 data "archive_file" "base_lambda" {
   type        = "zip"
   source_dir  = "${path.module}/${var.runtime}_example"
-  output_file = "${path.module}/package.zip"
+  output_path = "${path.module}/package.zip"
 }
 
 resource "aws_s3_object" "default_handler" {
   bucket = var.lambda_bucket
   key    = "${var.function_name}.zip"
-  source = data.archive_file.base_lambda.output_file
+  source = data.archive_file.base_lambda.output_path
 
   lifecycle {
     ignore_changes = all
