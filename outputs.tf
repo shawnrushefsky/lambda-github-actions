@@ -21,3 +21,7 @@ output "log_group_name" {
 output "log_group_arn" {
   value = aws_cloudwatch_log_group.logs.arn
 }
+
+output "lambda_invoke_arn" {
+  value = aws_lambda_function.lambda.invoke_arn
+}
