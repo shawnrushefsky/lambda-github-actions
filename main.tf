@@ -28,7 +28,7 @@ locals {
       version_key     = "node-version"
       version_value   = var.node_version
       build_command   = "npm clean-install"
-      lambda_runtime  = "node${var.node_version}.x"
+      lambda_runtime  = "nodejs${var.node_version}.x"
       default_handler = "index.handler"
     }
 
