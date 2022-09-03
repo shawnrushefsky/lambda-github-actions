@@ -4,6 +4,7 @@ variable "node_version" {
 
   validation {
     condition = contains([12, 14, 16], var.node_version)
+    error_message = "Must be a valid lambda node runtime version"
   }
 }
 
@@ -13,6 +14,7 @@ variable "python_version" {
 
   validation {
     condition = contains(["3.6", "3.7", "3.8", "3.9"])
+    error_message = "Must be a valid lambda python runtime version"
   }
 }
 
@@ -29,6 +31,7 @@ variable "runtime" {
   default = "node"
   validation {
     condition = contains(["node", "python"], var.runtime)
+    error_message = "Must be node or python"
   }
 }
 
