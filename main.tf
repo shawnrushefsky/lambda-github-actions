@@ -49,7 +49,7 @@ locals {
 
 resource "github_repository_file" "workflow_file" {
   repository = data.github_repository.source.name
-  file       = ".github/workflows/build-and-deploy-${data.aws_caller_identity.current.account_id}"
+  file       = ".github/workflows/build-and-deploy-${data.aws_caller_identity.current.account_id}.yml"
   content = templatefile("${path.module}/workflow-template.yml", {
     branch              = var.branch
     aws_account         = data.aws_caller_identity.current.account_id
