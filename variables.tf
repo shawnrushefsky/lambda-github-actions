@@ -13,7 +13,7 @@ variable "python_version" {
   default = "3.9"
 
   validation {
-    condition = contains(["3.6", "3.7", "3.8", "3.9"])
+    condition = contains(["3.6", "3.7", "3.8", "3.9"], var.python_version)
     error_message = "Must be a valid lambda python runtime version"
   }
 }
