@@ -3,7 +3,7 @@ variable "node_version" {
   default = 16
 
   validation {
-    condition = contains([12, 14, 16], var.node_version)
+    condition     = contains([12, 14, 16], var.node_version)
     error_message = "Must be a valid lambda node runtime version"
   }
 }
@@ -13,7 +13,7 @@ variable "python_version" {
   default = "3.9"
 
   validation {
-    condition = contains(["3.6", "3.7", "3.8", "3.9"], var.python_version)
+    condition     = contains(["3.6", "3.7", "3.8", "3.9"], var.python_version)
     error_message = "Must be a valid lambda python runtime version"
   }
 }
@@ -30,7 +30,7 @@ variable "runtime" {
   type    = string
   default = "node"
   validation {
-    condition = contains(["node", "python"], var.runtime)
+    condition     = contains(["node", "python"], var.runtime)
     error_message = "Must be node or python"
   }
 }
@@ -66,4 +66,9 @@ variable "log_retention_in_days" {
 variable "environment" {
   type    = map(string)
   default = {}
+}
+
+variable "publish" {
+  type    = bool
+  default = false
 }
