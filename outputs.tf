@@ -25,3 +25,7 @@ output "log_group_arn" {
 output "lambda_invoke_arn" {
   value = aws_lambda_function.lambda.invoke_arn
 }
+
+output "lambda_qualified_arn" {
+  value = aws_lambda_function.lambda.qualified_arn
+}
