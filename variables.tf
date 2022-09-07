@@ -72,3 +72,8 @@ variable "publish" {
   type    = bool
   default = false
 }
+
+variable "architecture" {
+  type = string
+  default = "arm64"
+}

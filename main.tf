@@ -99,7 +99,7 @@ resource "aws_lambda_function" "lambda" {
   handler       = local.handler
   runtime       = local.runtimes[var.runtime].lambda_runtime
   role          = aws_iam_role.lambda_role.arn
-  architectures = ["arm64"]
+  architectures = [var.architecture]
   publish       = var.publish
 
   environment {
