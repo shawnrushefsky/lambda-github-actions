@@ -32,7 +32,7 @@ jobs:
         run: ${build_command}
 
       - name: zip it up
-        run: zip -r package.zip ./ -x '*.git'
+        run: zip -r package.zip ./ -x '*.git' -x '.git*'
 
       - name: push it to s3
         run: |
