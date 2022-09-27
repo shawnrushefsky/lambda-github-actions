@@ -100,6 +100,7 @@ resource "aws_lambda_function" "lambda" {
   role          = aws_iam_role.lambda_role.arn
   architectures = [var.architecture]
   publish       = var.publish
+  timeout       = var.timeout
 
   dynamic environment {
     for_each = length(keys(var.environment)) > 0 ? {"0": "0"} : {}

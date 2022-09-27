@@ -77,3 +77,8 @@ variable "architecture" {
   type = string
   default = "arm64"
 }
+
+variable "timeout" {
+  type = number
+  default = 3
+}
