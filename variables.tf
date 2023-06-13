@@ -74,11 +74,16 @@ variable "publish" {
 }
 
 variable "architecture" {
-  type = string
+  type    = string
   default = "arm64"
 }
 
 variable "timeout" {
-  type = number
+  type    = number
   default = 3
+}
+
+variable "memory_mb" {
+  type    = number
+  default = 128
 }

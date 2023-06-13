@@ -101,9 +101,10 @@ resource "aws_lambda_function" "lambda" {
   architectures = [var.architecture]
   publish       = var.publish
   timeout       = var.timeout
+  memory_size   = var.memory_mb
 
-  dynamic environment {
-    for_each = length(keys(var.environment)) > 0 ? {"0": "0"} : {}
+  dynamic "environment" {
+    for_each = length(keys(var.environment)) > 0 ? { "0" : "0" } : {}
     content {
       variables = var.environment
     }
